@@ -1,0 +1,42 @@
+<Lems>
+  <Target component="sim1"/>
+  <!-- Include core NeuroML2 ComponentType definitions -->
+  <Include file="Cells.xml"/>
+  <Include file="Networks.xml"/>
+  <Include file="Simulation.xml"/>
+
+  <ComponentType name="myComponent"> <!-- Define the model -->
+
+    <!-- Needed to ensure state variables remain dimensionless... -->
+    <Constant name="MSEC" dimension="time" value="1ms"/>
+
+    <Exposure name="MLv" dimension="none"/>
+    <Exposure name="MLKw" dimension="none"/>
+
+    <Dynamics>
+
+      <StateVariable name="MLv" dimension="none" exposure="MLv"/>
+      <StateVariable name="MLKw" dimension="none" exposure="MLKw"/>
+
+      <TimeDerivative variable="MLv" value="((((4)*(.5*(1+tanh((MLv-(-1.2))/(18))))*((120)-MLv)))+((((8)*MLKw*((-84)-MLv)))+((((2)*((-60)-MLv)))+(((100))+0))))/(20)/MSEC"/>
+      <TimeDerivative variable="MLKw" value="((0.04)*cosh((MLv-(2))/(2*(30))))*((.5*(1+tanh((MLv-(2))/(30))))-MLKw)/MSEC"/>
+
+      <OnStart>
+        <StateAssignment variable="MLv" value="-60.899"/>
+        <StateAssignment variable="MLKw" value="0.014873"/>
+      </OnStart>
+
+    </Dynamics>
+  </ComponentType>
+
+  <myComponent id="c0"/> <!--Create an instance -->
+
+  <Simulation id="sim1" length="1000 ms" step="0.05 ms" target="c0">
+
+    <Display id="d1" title="Test simulation" timeScale="1ms" xmin="0" xmax="1000" ymin="-80" ymax="30">
+      <Line id ="MLv" quantity="MLv" scale="1" color="#000000" timeScale="1ms"/>
+      <Line id ="MLKw" quantity="MLKw" scale="1" color="#FF0000" timeScale="1ms"/>
+  </Display>
+
+  </Simulation>
+</Lems>
